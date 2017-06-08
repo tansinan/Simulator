@@ -25,7 +25,7 @@ public class StoreBuffer extends ReservationStation {
 		}
 	}
 	
-	protected EntryData[] entries;
+	public EntryData[] entries;
 	public StoreBuffer(TomasuloCircuit circuit, int size)
 	{
 		super(circuit, size);

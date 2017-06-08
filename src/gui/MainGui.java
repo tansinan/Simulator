@@ -38,7 +38,7 @@ public class MainGui {
 	public InstructionQueuePanel instructionQueuePanel;
 	public IntegerPanel integerPanel;
 	public LSQueuePanel loadQueuePanel;
-	private LSQueuePanel storeQueuePanel;
+	public LSQueuePanel storeQueuePanel;
 	public MemoryPanel memoryPanel;
 	private ParameterPanel parameterPanel;
 	public ReservationStationPanel reservationStationPanel;
@@ -262,6 +262,7 @@ public class MainGui {
 			circuit.tick();
 			MainGui.this.memoryPanel.updateFromLogic();
 			MainGui.this.loadQueuePanel.updateFromLogic();
+			MainGui.this.storeQueuePanel.updateFromLogic();
 			MainGui.this.integerPanel.updateFromLogic();
 			MainGui.this.floatPanel.updateFromLogic();
 			MainGui.this.reservationStationPanel.updateFromLogic();

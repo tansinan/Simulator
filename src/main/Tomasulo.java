@@ -25,6 +25,7 @@ public class Tomasulo {
 		mainGui.memoryPanel.bindDataMemory(circuit.dataMemory);
 		mainGui.instructionQueuePanel.bindInstructionMemory(circuit.instructionMemory);
 		mainGui.loadQueuePanel.bindLoadBuffer(circuit.loadBuffer);
+		mainGui.storeQueuePanel.bindStoreBuffer(circuit.storeBuffer);
 		mainGui.integerPanel.bindRegularRegisterFile(circuit.regularRegisterFile);
 		mainGui.floatPanel.bindFPRegisterFile(circuit.fpRegisterFile);
 		mainGui.reservationStationPanel.bindReservationStation(

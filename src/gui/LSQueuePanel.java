@@ -14,6 +14,7 @@ import javax.swing.table.DefaultTableModel;
 import logic.components.DataMemory;
 import logic.components.LoadBuffer;
 import logic.components.Operation;
+import logic.components.StoreBuffer;
 import logic.components.InstructionMemory.FPUInstruction;
 import logic.components.InstructionMemory.Instruction;
 import logic.components.InstructionMemory.LoadStoreInstruction;
@@ -25,18 +26,19 @@ public class LSQueuePanel extends JPanel{
 	private JScrollPane scroller;
 	public boolean load;
 	LoadBuffer loadBuffer;
+	String mode;
+	private StoreBuffer storeBuffer;
 	
 	LSQueuePanel(boolean load) {
-		String a = null;
 		this.load = load;
 		if(load == true){
-			a = "Load";
+			mode = "Load";
 		}
 		else {
-			a = "Store";
+			mode = "Store";
 		}
 		
-		label = new JLabel(a + " Queue", SwingConstants.CENTER);
+		label = new JLabel(mode + " Queue", SwingConstants.CENTER);
 		label.setFont(new Font(Font.DIALOG, Font.BOLD, 16));
 		
 		String[] colName = {"", "Busy", "BaseAddress", "Offset"};
@@ -57,30 +59,77 @@ public class LSQueuePanel extends JPanel{
 		updateFromLogic();
 	}
 	
+	public void bindStoreBuffer(StoreBuffer storeBuffer)
+	{
+		this.storeBuffer = storeBuffer;
+		updateFromLogic();
+	}
+	
 	public void updateFromLogic() {
-		int loadQueueSize = loadBuffer.getSize();
-		if(loadQueueSize != tableModel.getRowCount()) {
-			tableModel.setRowCount(loadQueueSize);
+		if(mode.equals("Load"))
+		{
+			int loadQueueSize = loadBuffer.getSize();
+			if(loadQueueSize != tableModel.getRowCount()) {
+				tableModel.setRowCount(loadQueueSize);
+				for(int i = 0; i < loadQueueSize; i++)
+				{
+					tableModel.setValueAt("LOAD" + i, i, 0);
+					label.setText("Load Queue (" + loadQueueSize + " LD instructions)");
+				}
+			}
 			for(int i = 0; i < loadQueueSize; i++)
 			{
-				tableModel.setValueAt("LOAD" + i, i, 0);
-				label.setText("Load Queue (" + loadQueueSize + " LD instructions)");
+				LoadBuffer.EntryData entry = loadBuffer.entries[i];
+				if(entry == null)
+				{
+					tableModel.setValueAt("No", i, 1);
+					for(int j = 2; j <= 3; j++) {
+						tableModel.setValueAt("", i, j);
+					}
+					continue;
+				}
+				tableModel.setValueAt("Yes", i, 1);
+				tableModel.setValueAt(entry.baseAddress, i, 2);
+				tableModel.setValueAt(entry.offset, i, 3);
 			}
 		}
-		for(int i = 0; i < loadQueueSize; i++)
+		else
 		{
-			LoadBuffer.EntryData entry = loadBuffer.entries[i];
-			if(entry == null)
-			{
-				tableModel.setValueAt("No", i, 1);
-				for(int j = 2; j <= 3; j++) {
-					tableModel.setValueAt("", i, j);
+			int storeQueueSize = storeBuffer.getSize();
+			if(storeQueueSize != tableModel.getRowCount()) {
+				tableModel.setRowCount(storeQueueSize);
+				tableModel.setColumnCount(5);
+				String[] colNames = {"", "Busy", "BaseAddress", "Offset", "Value"};
+				tableModel.setColumnIdentifiers(colNames);
+				for(int i = 0; i < storeQueueSize; i++)
+				{
+					tableModel.setValueAt("STORE" + i, i, 0);
+					label.setText("Store Queue (" + storeQueueSize + " LD instructions)");
 				}
-				continue;
 			}
-			tableModel.setValueAt("Yes", i, 1);
-			tableModel.setValueAt(entry.baseAddress, i, 2);
-			tableModel.setValueAt(entry.offset, i, 3);
+			for(int i = 0; i < storeQueueSize; i++)
+			{
+				StoreBuffer.EntryData entry = storeBuffer.entries[i];
+				if(entry == null)
+				{
+					tableModel.setValueAt("No", i, 1);
+					for(int j = 2; j <= 4; j++) {
+						tableModel.setValueAt("", i, j);
+					}
+					continue;
+				}
+				tableModel.setValueAt("Yes", i, 1);
+				tableModel.setValueAt(entry.baseAddress, i, 2);
+				tableModel.setValueAt(entry.offset, i, 3);
+				if(entry.value.isAvailable)
+				{
+					tableModel.setValueAt(entry.value.value, i, 4);
+				}
+				else
+				{
+					tableModel.setValueAt(entry.value.rsEntry, i, 4);
+				}
+			}
 		}
 	}
 }
