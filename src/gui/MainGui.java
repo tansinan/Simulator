@@ -42,7 +42,7 @@ public class MainGui {
 	public MemoryPanel memoryPanel;
 	private ParameterPanel parameterPanel;
 	public ReservationStationPanel reservationStationPanel;
-	private RuntimePanel runtimePanel;
+	public RuntimePanel runtimePanel;
 	protected TomasuloCircuit circuit;
 	protected Timer timer;
 
@@ -261,6 +261,7 @@ public class MainGui {
 		public void actionPerformed(ActionEvent e) {
 			circuit.tick();
 			MainGui.this.memoryPanel.updateFromLogic();
+			MainGui.this.runtimePanel.updateFromLogic();
 			MainGui.this.loadQueuePanel.updateFromLogic();
 			MainGui.this.storeQueuePanel.updateFromLogic();
 			MainGui.this.integerPanel.updateFromLogic();

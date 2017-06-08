@@ -30,6 +30,7 @@ public class Tomasulo {
 		mainGui.floatPanel.bindFPRegisterFile(circuit.fpRegisterFile);
 		mainGui.reservationStationPanel.bindReservationStation(
 				circuit.addReservationStation, circuit.mulReservationStation);
+		mainGui.runtimePanel.bindInstructionMemory(circuit.instructionMemory);
 	}
 
 }

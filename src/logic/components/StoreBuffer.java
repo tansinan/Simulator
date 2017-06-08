@@ -20,8 +20,7 @@ public class StoreBuffer extends ReservationStation {
 		public RenamedValue value;
 		@Override
 		public boolean readyToExecute() {
-			// TODO Auto-generated method stub
-			return true;
+			return value.isAvailable;
 		}
 	}
 	
@@ -44,6 +43,7 @@ public class StoreBuffer extends ReservationStation {
 				if(entries[i].value.isAvailable == true)
 				{
 					circuit.dataMemory.setData(entries[i].baseAddress + entries[i].offset, entries[i].value.value);
+					circuit.sendBroadcast(entries[i], 0.0f); // This is just to change running status.
 					entries[i] = null;
 				}
 			}

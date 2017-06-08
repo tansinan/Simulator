@@ -11,17 +11,26 @@ import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
 
-class RuntimePanel extends JPanel{
+import logic.components.DataMemory;
+import logic.components.InstructionMemory;
+import logic.components.Operation;
+import logic.components.InstructionMemory.ExecStatus;
+import logic.components.InstructionMemory.FPUInstruction;
+import logic.components.InstructionMemory.Instruction;
+import logic.components.InstructionMemory.LoadStoreInstruction;
+
+public class RuntimePanel extends JPanel{
 	private JLabel label;
 	private JTable table;
 	private DefaultTableModel tableModel;
 	private JScrollPane scroller;
+	protected InstructionMemory instructionMemory;
 	
 	RuntimePanel(){
 		label = new JLabel("运行状态", SwingConstants.CENTER);
 		label.setFont(new Font(Font.DIALOG, Font.BOLD, 16));
 		
-		String[] colName = {"发射指令", "执行完毕", "写回结果"};
+		String[] colName = {"指令", "运行状态", "写回结果"};
 		tableModel = new DefaultTableModel(null, colName);
 		table = new JTable(tableModel);
 		table.setRowHeight(25);
@@ -31,6 +40,61 @@ class RuntimePanel extends JPanel{
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         add(label);
         add(scroller);
+	}
+
+	public void bindInstructionMemory(InstructionMemory instructionMemory) {
+		this.instructionMemory = instructionMemory;
+		updateFromLogic();
+	}
+	
+	public void updateFromLogic() {
+		int memorySize = instructionMemory.getSize();
+		if(memorySize != tableModel.getRowCount()) {
+			tableModel.setRowCount(memorySize);
+		}
+		for(int i = 0; i < memorySize; i++)
+		{
+			Instruction instruction = instructionMemory.getInstruction(i);
+			if(instruction == null)
+			{
+				tableModel.setValueAt("NOP", i, 1);
+				for(int j = 0; j < 3; j++) {
+					tableModel.setValueAt("", i, j);
+				}
+				continue;
+			}
+			tableModel.setValueAt("" + Operation.OperationAbbr(instruction.operation), i, 0);
+			String s = "";
+			switch(instruction.execStatus)
+			{
+			case DONE:
+				s = "完成";
+				break;
+			case QUEUED:
+				s = "进入保留站或队列";
+				break;
+			case RUNNING:
+				s = "正在执行";
+				break;
+			case WAITING:
+				s = "正在等待";
+				break;
+			default:
+				break;	
+			}
+			tableModel.setValueAt(s, i, 1);
+			if(instruction.execStatus == ExecStatus.DONE) {
+				tableModel.setValueAt("Yes", i, 2);
+			}
+			else {
+				tableModel.setValueAt("No", i, 2);
+			}
+			//tableModel.setValueAt("F" + fpInst.source1, i, 3);
+		}
+	}
+	
+	public void writeToLogic() {
+		
 	}
 	
 	void addRuntime(String instruction) {

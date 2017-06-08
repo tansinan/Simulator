@@ -8,6 +8,7 @@ import logic.components.FPAddReservationStation;
 import logic.components.FPMulReservationStation;
 import logic.components.FPRegisterFile;
 import logic.components.InstructionMemory;
+import logic.components.InstructionMemory.ExecStatus;
 import logic.components.InstructionMemory.FPUInstruction;
 import logic.components.InstructionMemory.Instruction;
 import logic.components.InstructionMemory.LoadStoreInstruction;
@@ -135,6 +136,7 @@ public class TomasuloCircuit {
 	
 	public void sendBroadcast(ReservationStation.Entry entry, float result)
 	{
+		entry.instruction.execStatus = ExecStatus.DONE;
 		loadBuffer.onBroadcast(entry, result);
 		storeBuffer.onBroadcast(entry, result);
 		addReservationStation.onBroadcast(entry, result);
