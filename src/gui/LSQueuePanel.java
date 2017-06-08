@@ -104,7 +104,7 @@ public class LSQueuePanel extends JPanel{
 				for(int i = 0; i < storeQueueSize; i++)
 				{
 					tableModel.setValueAt("STORE" + i, i, 0);
-					label.setText("Store Queue (" + storeQueueSize + " LD instructions)");
+					label.setText("Store Queue (" + storeQueueSize + " ST instructions)");
 				}
 			}
 			for(int i = 0; i < storeQueueSize; i++)
