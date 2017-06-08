@@ -68,6 +68,10 @@ public class TomasuloCircuit {
 				4, instructionMemory.new FPUInstruction(Operation.DIVISION, 10, 0, 6));
 		instructionMemory.setInstruction(
 				5, instructionMemory.new FPUInstruction(Operation.ADD, 6, 8, 2));
+		instructionMemory.setInstruction(
+				6, instructionMemory.new LoadStoreInstruction(Operation.STORE, 10, 3, 1));
+		instructionMemory.setInstruction(
+				7, instructionMemory.new LoadStoreInstruction(Operation.STORE, 6, 4, 2));
 		components = new HashMap<String, Component>();
 		pins = new HashMap<String, Pin>();
 	}
@@ -114,6 +118,9 @@ public class TomasuloCircuit {
 				}
 				break;
 			case STORE:
+				if(storeBuffer.addInstruction((LoadStoreInstruction)instruction)) {
+					instructionMemory.reportStatus(instruction, InstructionMemory.ExecStatus.QUEUED);
+				}
 				break;
 			default:
 				break;
